@@ -154,3 +154,50 @@ def cmd_echo(args: list[str], cwd: Node) -> tuple[str, Node]:
     :rtype: tuple[str, Node]
     """
     return " ".join(args), cwd
+
+
+def cmd_touch(args: list[str], cwd: Node) -> tuple[str, Node]:
+    """Реализация touch: создаёт пустой файл.
+
+    :param args: аргументы
+    :type args: list[str]
+    :param cwd: текущий каталог
+    :type cwd: Node
+    :return: (вывод, cwd)
+    :rtype: tuple[str, Node]
+    """
+    for path in args:
+        if "/" in path:
+            parent_path, name = path.rsplit("/", 1)
+            parent = resolve(cwd, parent_path or "/")
+            if parent is None or parent.kind != "dir":
+                raise CommandError(
+                    f"touch: {path}: нет такого каталога"
+                )
+        else:
+            parent, name = cwd, path
+        if name in parent.children:
+            continue
+        node = Node("file", name, owner="user")
+        parent.add(node)
+    return "", cwd
+
+
+def cmd_chown(args: list[str], cwd: Node) -> tuple[str, Node]:
+    """Реализация chown: меняет владельца файла.
+
+    :param args: аргументы
+    :type args: list[str]
+    :param cwd: текущий каталог
+    :type cwd: Node
+    :return: (вывод, cwd)
+    :rtype: tuple[str, Node]
+    """
+    if len(args) != 2:
+        raise CommandError("chown: использование: chown user file")
+    user, path = args
+    node = resolve(cwd, path)
+    if node is None:
+        raise CommandError(f"chown: {path}: нет такого файла")
+    node.owner = user
+    return "", cwd

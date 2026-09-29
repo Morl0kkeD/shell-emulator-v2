@@ -1,0 +1,21 @@
+# stage 5: touch и chown
+echo --- Testing touch ---
+ls
+touch new_file.txt
+ls
+touch docs/new_doc.txt
+cd docs
+ls
+cd ..
+
+echo --- Testing chown ---
+ls
+chown admin file1.txt
+chown developer docs
+ls
+
+echo --- Testing errors ---
+touch non_existent_folder/file.txt
+chown user non_existent_file.txt
+chown
+touch

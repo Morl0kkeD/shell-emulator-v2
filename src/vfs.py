@@ -48,6 +48,9 @@ class Node:
 def load_vfs(path: str) -> Node:
     """Загружает VFS из XML-файла.
 
+    Если внутри <vfs> находится ровно один <directory name="/">,
+    он используется как корневой узел (без лишней вложенности).
+
     :param path: путь к XML
     :type path: str
     :return: корневой узел
@@ -62,8 +65,17 @@ def load_vfs(path: str) -> Node:
         raise VfsError(f"неверный формат XML: {exc}") from exc
 
     root_elem = tree.getroot()
+    children = list(root_elem)
     root = Node("dir", "/")
-    _build_children(root_elem, root)
+
+    if (
+        len(children) == 1
+        and children[0].tag in ("directory", "dir")
+        and children[0].get("name") in ("/", "")
+    ):
+        _build_children(children[0], root)
+    else:
+        _build_children(root_elem, root)
     return root
 
 
@@ -80,6 +92,8 @@ def _build_children(elem: ET.Element, parent: Node) -> None:
             continue
         kind = "dir" if child.tag in ("directory", "dir") else "file"
         name = child.get("name", "")
+        if not name:
+            continue
         owner = child.get("owner", "root")
         mode = int(child.get("mode", "644"), 8)
         node = Node(kind, name, owner, mode)

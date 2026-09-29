@@ -78,9 +78,11 @@ class ShellGUI:
         from src.commands import (
             CommandError,
             cmd_cd,
+            cmd_chown,
             cmd_du,
             cmd_echo,
             cmd_ls,
+            cmd_touch,
             cmd_wc,
         )
 
@@ -97,6 +99,8 @@ class ShellGUI:
             "du": cmd_du,
             "wc": cmd_wc,
             "echo": cmd_echo,
+            "touch": cmd_touch,
+            "chown": cmd_chown,
         }
         handler = table.get(name)
         if handler is None:
