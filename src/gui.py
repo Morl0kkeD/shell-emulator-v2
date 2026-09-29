@@ -1,4 +1,4 @@
-﻿"""Графический интерфейс эмулятора."""
+"""Графический интерфейс эмулятора."""
 import getpass
 import socket
 import tkinter as tk
@@ -18,6 +18,8 @@ class ShellGUI:
         title = f"Эмулятор - [{user}@{host}]"
         self.root.title(title)
         self.root.geometry("800x500")
+        self.vfs_root = None
+        self.cwd = None
 
         self.out = scrolledtext.ScrolledText(
             self.root, state="disabled", wrap="word"
@@ -83,12 +85,19 @@ class ShellGUI:
         self.write(f"{name}: команда не найдена")
 
     def set_vfs(self, path: str) -> None:
-        """Показывает, что VFS будет загружен (заглушка этапа 2).
+        """Загружает VFS в контекст.
 
         :param path: путь к XML
         :type path: str
         """
-        self.write(f"[VFS] будет загружен: {path}")
+        from src.vfs import VfsError, load_vfs
+
+        try:
+            self.vfs_root = load_vfs(path)
+            self.cwd = self.vfs_root
+            self.write(f"VFS загружен: {path}")
+        except VfsError as exc:
+            self.write(f"Ошибка VFS: {exc}")
 
     def run_script_file(self, path: str) -> None:
         """Выполняет стартовый скрипт.

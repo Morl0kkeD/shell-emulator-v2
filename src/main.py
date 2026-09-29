@@ -1,4 +1,4 @@
-﻿"""Точка входа эмулятора оболочки."""
+"""Точка входа эмулятора оболочки."""
 from src.config import debug_dump, parse_args
 from src.gui import ShellGUI
 

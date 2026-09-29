@@ -1,4 +1,4 @@
-﻿"""Разбор параметров командной строки."""
+"""Разбор параметров командной строки."""
 import argparse
 from dataclasses import dataclass
 
