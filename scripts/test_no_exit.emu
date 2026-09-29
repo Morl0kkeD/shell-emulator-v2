@@ -1,0 +1,6 @@
+﻿# без exit — окно не закроется само
+ls
+cd /home
+ls "незакрытая
+unknown_command
+echo hello world

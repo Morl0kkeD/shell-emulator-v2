@@ -1,0 +1,7 @@
+﻿# минимальный стартовый скрипт
+ls
+cd /home
+ls "незакрытая
+unknown_command
+echo hello world
+exit

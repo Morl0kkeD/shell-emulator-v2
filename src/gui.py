@@ -82,6 +82,24 @@ class ShellGUI:
             return
         self.write(f"{name}: команда не найдена")
 
+    def set_vfs(self, path: str) -> None:
+        """Показывает, что VFS будет загружен (заглушка этапа 2).
+
+        :param path: путь к XML
+        :type path: str
+        """
+        self.write(f"[VFS] будет загружен: {path}")
+
+    def run_script_file(self, path: str) -> None:
+        """Выполняет стартовый скрипт.
+
+        :param path: путь к скрипту
+        :type path: str
+        """
+        from src.script_runner import run_script
+
+        run_script(path, self.dispatch, self.write)
+
     def run(self) -> None:
         """Запускает главный цикл."""
         self.root.mainloop()
