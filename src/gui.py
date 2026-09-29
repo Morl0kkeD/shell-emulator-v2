@@ -87,12 +87,21 @@ class ShellGUI:
         )
 
         name, *args = tokens
+
         if name == "exit":
             self.root.destroy()
             return
+
         if self.cwd is None:
-            self.write("VFS не загружен")
+            if name in ("ls", "cd"):
+                self.write(f"{name}: аргументы {args}")
+                return
+            if name in ("du", "wc", "echo", "touch", "chown"):
+                self.write("VFS не загружен")
+                return
+            self.write(f"{name}: команда не найдена")
             return
+
         table = {
             "ls": cmd_ls,
             "cd": cmd_cd,
