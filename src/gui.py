@@ -70,19 +70,46 @@ class ShellGUI:
         self.run_tokens(tokens)
 
     def run_tokens(self, tokens: list[str]) -> None:
-        """Выполняет команду (заглушки этапа 1).
+        """Выполняет команду.
 
         :param tokens: список токенов
         :type tokens: list[str]
         """
+        from src.commands import (
+            CommandError,
+            cmd_cd,
+            cmd_du,
+            cmd_echo,
+            cmd_ls,
+            cmd_wc,
+        )
+
         name, *args = tokens
         if name == "exit":
             self.root.destroy()
             return
-        if name in ("ls", "cd"):
-            self.write(f"{name}: аргументы {args}")
+        if self.cwd is None:
+            self.write("VFS не загружен")
             return
-        self.write(f"{name}: команда не найдена")
+        table = {
+            "ls": cmd_ls,
+            "cd": cmd_cd,
+            "du": cmd_du,
+            "wc": cmd_wc,
+            "echo": cmd_echo,
+        }
+        handler = table.get(name)
+        if handler is None:
+            self.write(f"{name}: команда не найдена")
+            return
+        try:
+            out, new_cwd = handler(args, self.cwd)
+        except CommandError as exc:
+            self.write(str(exc))
+            return
+        self.cwd = new_cwd
+        if out:
+            self.write(out)
 
     def set_vfs(self, path: str) -> None:
         """Загружает VFS в контекст.
