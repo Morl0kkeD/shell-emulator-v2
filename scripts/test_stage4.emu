@@ -1,0 +1,23 @@
+# stage 4: основные команды
+echo --- Testing echo ---
+echo Hello World
+echo Testing echo with arguments
+
+echo --- Testing ls and cd ---
+ls
+cd docs
+ls
+cd ..
+
+echo --- Testing du ---
+du
+du file1.txt
+
+echo --- Testing wc ---
+wc file1.txt
+
+echo --- Testing errors ---
+cd non_existent_folder
+wc non_existent_file.txt
+du non_existent_path
+unknown_command
